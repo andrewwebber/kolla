@@ -20,7 +20,12 @@ MAINTAINER {{ maintainer }}
 {% elif base_distro == 'ubuntu' %}
 
     {% set nova_libvirt_packages = [
-        'ceph-common',
+        'librados2=0.94.*',
+        'librbd1=0.94.*',
+        'python-rados=0.94.*',
+        'python-cephfs=0.94.*',
+        'python-rbd=0.94.*',
+        'ceph-common=0.94.*',
         'libvirt-bin',
         'dmidecode',
         'pm-utils',
