@@ -27,7 +27,8 @@ MAINTAINER {{ maintainer }}
         'librados2=0.94.*',
         'librbd1=0.94.*',
         'python-rbd=0.94.*',
-        'python-rados=0.94.*'
+        'python-rados=0.94.*',
+        '--allow-unauthenticated'
     ] %}
 
 {{ macros.install_packages(glance_base_packages | customizable("packages")) }}

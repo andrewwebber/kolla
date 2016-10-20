@@ -71,7 +71,8 @@ RUN rm -f /etc/nova/nova-compute.conf
             'genisoimage',
             'open-iscsi',
             'targetcli',
-            'python-rtslib'
+            'python-rtslib',
+            '--allow-unauthenticated'
         ] %}
 
 RUN mkdir -p /etc/ceph
