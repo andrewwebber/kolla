@@ -22,10 +22,10 @@ a real physical volume or a loopback mounted file for development.
   The Cinder community has closed a bug as WontFix which makes it
   impossible for LVM to be used at all in a multi-controller setup.
   The only option for multi-controller storage to work correctly at
-  present is via a Ceph deployment.  If community members disagree
+  present is via a Ceph deployment. If community members disagree
   with this decision, please report the specific use case in the
   Cinder bug tracker here:
-  `_bug 1571211  <https://launchpad.net/bugs/1571211>`__.
+  `_bug 1571211 <https://launchpad.net/bugs/1571211>`__.
 
 
 Create a Volume Group
@@ -97,7 +97,7 @@ between nova-compute process and the server hosting LVG.
 
 In order to use Cinder's LVM backend, a LVG named ``cinder-volumes`` should
 exist on the server and following parameter must be specified in
-``globals.yml``. ::
+``globals.yml`` ::
 
     enable_cinder_backend_lvm: "yes"
 
@@ -126,3 +126,13 @@ targeted for nova compute role.
     ::
 
       mount -t configfs /etc/rc.local /sys/kernel/config
+
+Cinder backend with external iSCSI storage
+==========================================
+
+In order to use external storage system (like one from EMC or NetApp)
+the following parameter must be specified in ``globals.yml`` ::
+
+    enable_cinder_backend_iscsi: "yes"
+
+Also ``enable_cinder_backend_lvm`` should be set to "no" in this case.

@@ -12,10 +12,14 @@ unset LANGUAGE
 LC_ALL=C
 export LC_ALL
 for i in curl nova neutron openstack; do
-  if [[ ! $(which $i) ]]; then
-    echo "$i not installed. Please install $i before proceeding"
-    exit 1
-  fi
+    if [[ ! $(type $i 2>/dev/null) ]]; then
+        if [ "$i" == 'curl' ]; then
+            echo "$i not installed. Please install $i before proceeding"
+        else
+            echo "python-${i}client not installed. Please install python-${i}client before proceeding"
+        fi
+        exit
+    fi
 done
 # Move to top level directory
 REAL_PATH=$(python -c "import os,sys;print os.path.realpath('$0')")
@@ -98,3 +102,19 @@ if ! openstack flavor list | grep -q m1.tiny; then
         openstack flavor create --id 4 --ram 8192 --disk 80 --vcpus 4 m1.large
         openstack flavor create --id 5 --ram 16384 --disk 160 --vcpus 8 m1.xlarge
 fi
+
+DEMO_NET_ID=$(openstack network list | awk '/ demo-net / {print $2}')
+
+cat << EOF
+
+Done.
+
+To deploy a demo instance, run:
+
+openstack server create \\
+    --image cirros \\
+    --flavor m1.tiny \\
+    --key-name mykey \\
+    --nic net-id=${DEMO_NET_ID} \\
+    demo1
+EOF

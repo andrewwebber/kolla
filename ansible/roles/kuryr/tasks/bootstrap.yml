@@ -14,5 +14,6 @@
     restart_policy: "never"
     volumes:
       - "{{ node_config_directory }}/kuryr/:{{ container_config_directory }}/:ro"
-      - "/run:/run"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/run:/run:shared"
       - "/usr/lib/docker:/usr/lib/docker"

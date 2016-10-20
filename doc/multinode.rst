@@ -64,6 +64,7 @@ variable and add ``$DOCKER_OPTS`` to the end of ExecStart in ``[Service]``
 section:
 
 ::
+
     # CentOS
     [Service]
     MountFlags=shared
@@ -85,6 +86,8 @@ Restart docker by executing the following commands:
 
     # Ubuntu with upstart or sysvinit
     sudo service docker restart
+
+.. _edit-inventory:
 
 Edit the Inventory File
 =======================

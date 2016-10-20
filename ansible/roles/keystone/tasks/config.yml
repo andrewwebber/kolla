@@ -75,6 +75,14 @@
     - "{{ node_custom_config }}/keystone/wsgi-keystone.conf"
     - "wsgi-keystone.conf.j2"
 
+- name: Copying over keystone-paste.ini
+  merge_configs:
+    sources:
+      - "{{ role_path }}/templates/keystone-paste.ini.j2"
+      - "{{ node_custom_config }}/keystone/keystone-paste.ini"
+      - "{{ node_custom_config }}/keystone/{{ inventory_hostname }}/keystone-paste.ini"
+    dest: "{{ node_config_directory }}/keystone/keystone-paste.ini"
+
 - name: Generate the required cron jobs for the node
   local_action: "command python {{ role_path }}/files/fernet_rotate_cron_generator.py -t {{ (fernet_token_expiry | int) // 60 }} -i {{ groups['keystone'].index(inventory_hostname) }} -n {{ (groups['keystone'] | length) }}"
   register: cron_jobs_json
@@ -93,6 +101,8 @@
     - { src: "crontab.j2", dest: "crontab" }
     - { src: "fernet-rotate.sh.j2", dest: "fernet-rotate.sh" }
     - { src: "fernet-node-sync.sh.j2", dest: "fernet-node-sync.sh" }
+    - { src: "id_rsa", dest: "id_rsa" }
+    - { src: "ssh_config.j2", dest: "ssh_config" }
   when: keystone_token_provider == 'fernet'
 
 - name: Copying files for keystone-ssh
@@ -101,7 +111,5 @@
     dest: "{{ node_config_directory }}/keystone-ssh/{{ item.dest }}"
   with_items:
     - { src: "sshd_config.j2", dest: "sshd_config" }
-    - { src: "id_rsa", dest: "id_rsa" }
     - { src: "id_rsa.pub", dest: "id_rsa.pub" }
-    - { src: "ssh_config.j2", dest: "ssh_config" }
   when: keystone_token_provider == 'fernet'

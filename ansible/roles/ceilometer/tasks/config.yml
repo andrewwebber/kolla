@@ -1,3 +1,4 @@
+---
 - name: Ensuring config directories exist
   file:
     path: "{{ node_config_directory }}/{{ item }}"
@@ -20,6 +21,15 @@
     - "ceilometer-api"
     - "ceilometer-central"
     - "ceilometer-compute"
+
+- name: Copying over ceilometer-api.conf
+  template:
+    src: "{{ item }}"
+    dest: "{{ node_config_directory }}/ceilometer-api/wsgi-ceilometer-api.conf"
+  with_first_found:
+    - "{{ node_custom_config }}/ceilometer/{{ inventory_hostname }}/wsgi-ceilometer-api.conf"
+    - "{{ node_custom_config }}/ceilometer/wsgi-ceilometer-api.conf"
+    - "wsgi-ceilometer-api.conf.j2"
 
 - name: Copying over ceilometer.conf
   merge_configs:

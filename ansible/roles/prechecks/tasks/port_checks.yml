@@ -1,4 +1,20 @@
 ---
+- name: Checking free port for Aodh API
+  wait_for:
+    host: "{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}"
+    port: "{{ aodh_api_port }}"
+    connect_timeout: 1
+    state: stopped
+  when: inventory_hostname in groups['aodh-api']
+
+- name: Checking free port for Aodh API HAProxy
+  wait_for:
+    host: "{{ kolla_internal_vip_address }}"
+    port: "{{ aodh_api_port }}"
+    connect_timeout: 1
+    state: stopped
+  when: inventory_hostname in groups['haproxy']
+
 - name: Checking free port for Barbican API
   wait_for:
     host: "{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}"
@@ -27,6 +43,22 @@
   wait_for:
     host: "{{ kolla_internal_vip_address }}"
     port: "{{ cinder_api_port }}"
+    connect_timeout: 1
+    state: stopped
+  when: inventory_hostname in groups['haproxy']
+
+- name: Checking free port for Cloudkitty API
+  wait_for:
+    host: "{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}"
+    port: "{{ cloudkitty_api_port }}"
+    connect_timeout: 1
+    state: stopped
+  when: inventory_hostname in groups['cloudkitty-api']
+
+- name: Checking free port for Cloudkitty API HAProxy
+  wait_for:
+    host: "{{ kolla_internal_vip_address }}"
+    port: "{{ cloudkitty_api_port }}"
     connect_timeout: 1
     state: stopped
   when: inventory_hostname in groups['haproxy']
@@ -75,6 +107,22 @@
   wait_for:
     host: "{{ kolla_internal_vip_address }}"
     port: "{{ glance_registry_port }}"
+    connect_timeout: 1
+    state: stopped
+  when: inventory_hostname in groups['haproxy']
+
+- name: Checking free port for Sahara API
+  wait_for:
+    host: "{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}"
+    port: "{{ sahara_api_port }}"
+    connect_timeout: 1
+    state: stopped
+  when: inventory_hostname in groups['sahara-api']
+
+- name: Checking free port for Sahara API HAProxy
+  wait_for:
+    host: "{{ kolla_internal_vip_address }}"
+    port: "{{ sahara_api_port }}"
     connect_timeout: 1
     state: stopped
   when: inventory_hostname in groups['haproxy']
@@ -501,6 +549,22 @@
   wait_for:
     host: "{{ kolla_internal_vip_address }}"
     port: "{{ senlin_api_port }}"
+    connect_timeout: 1
+    state: stopped
+  when: inventory_hostname in groups['haproxy']
+
+- name: Checking free port for Mistral API
+  wait_for:
+    host: "{{ hostvars[inventory_hostname]['ansible_' + api_interface]['ipv4']['address'] }}"
+    port: "{{ mistral_api_port }}"
+    connect_timeout: 1
+    state: stopped
+  when: inventory_hostname in groups['mistral-api']
+
+- name: Checking free port for Mistral API HAProxy
+  wait_for:
+    host: "{{ kolla_internal_vip_address }}"
+    port: "{{ mistral_api_port }}"
     connect_timeout: 1
     state: stopped
   when: inventory_hostname in groups['haproxy']

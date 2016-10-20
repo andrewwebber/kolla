@@ -83,14 +83,8 @@ control
 [murano:children]
 control
 
-[ceph-mon:children]
+[ceph:children]
 control
-
-[ceph-rgw:children]
-control
-
-[ceph-osd:children]
-storage
 
 [ironic:children]
 control
@@ -193,6 +187,16 @@ neutron
 [neutron-vpnaas-agent:children]
 neutron
 
+# Ceph
+[ceph-mon:children]
+ceph
+
+[ceph-rgw:children]
+ceph
+
+[ceph-osd:children]
+storage
+
 # Cinder
 [cinder-api:children]
 cinder
@@ -217,6 +221,7 @@ cloudkitty
 [iscsid:children]
 compute
 storage
+ironic-conductor
 
 [tgtd:children]
 storage

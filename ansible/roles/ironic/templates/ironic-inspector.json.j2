@@ -1,10 +1,10 @@
 {
-    "command": "ironic-inspector --config-file /etc/ironic/ironic.conf",
+    "command": "ironic-inspector --config-file /etc/ironic-inspector/ironic.conf",
     "config_files": [
         {
             "source": "{{ container_config_directory }}/ironic.conf",
-            "dest": "/etc/ironic/ironic.conf",
-            "owner": "root",
+            "dest": "/etc/ironic-inspector/ironic.conf",
+            "owner": "ironic",
             "perm": "0600"
         }
     ]

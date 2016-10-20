@@ -16,6 +16,27 @@
             "perm": "0600"
         },
         {
+            "source": "{{ container_config_directory }}/heka-aodh.toml",
+            "dest": "/etc/heka/heka-aodh.toml",
+            "owner": "heka",
+            "perm": "0600",
+            "optional": {{ (not enable_aodh | bool) | string | lower }}
+        },
+        {
+            "source": "{{ container_config_directory }}/heka-gnocchi.toml",
+            "dest": "/etc/heka/heka-gnocchi.toml",
+            "owner": "heka",
+            "perm": "0600",
+            "optional": {{ (not enable_gnocchi | bool) | string | lower }}
+        },
+        {
+            "source": "{{ container_config_directory }}/heka-barbican.toml",
+            "dest": "/etc/heka/heka-barbican.toml",
+            "owner": "heka",
+            "perm": "0600",
+            "optional": {{ (not enable_barbican | bool) | string | lower }}
+        },
+        {
             "source": "{{ container_config_directory }}/heka-custom.toml",
             "dest": "/etc/heka/heka-custom.toml",
             "owner": "heka",
@@ -40,7 +61,8 @@
             "source": "{{ container_config_directory }}/heka-rabbitmq.toml",
             "dest": "/etc/heka/heka-rabbitmq.toml",
             "owner": "heka",
-            "perm": "0600"
+            "perm": "0600",
+            "optional": {{ (not enable_rabbitmq | bool) | string | lower }}
         },
         {
             "source": "{{ container_config_directory }}/heka-openstack.toml",
@@ -59,7 +81,8 @@
             "source": "{{ container_config_directory }}/heka-keystone.toml",
             "dest": "/etc/heka/heka-keystone.toml",
             "owner": "heka",
-            "perm": "0600"
+            "perm": "0600",
+            "optional": {{ (not enable_keystone | bool) | string | lower }}
         },
         {
             "source": "{{ container_config_directory }}/heka-horizon.toml",
@@ -78,5 +101,32 @@
         }{% if not loop.last %},{% endif %}
 {% endfor %}
 
+    ],
+    "permissions": [
+        {
+            "path": "/var/cache/hekad",
+            "owner": "heka:heka",
+            "recurse": true
+        },
+        {
+            "path": "/var/lib/kolla/heka",
+            "owner": "heka:heka",
+            "recurse": true
+        },
+        {
+            "path": "/var/log/kolla/haproxy",
+            "owner": "heka:kolla",
+            "recurse": true
+        },
+        {
+            "path": "/var/log/kolla/keepalived",
+            "owner": "heka:kolla",
+            "recurse": true
+        },
+        {
+            "path": "/var/log/kolla/swift",
+            "owner": "heka:kolla",
+            "recurse": true
+        }
     ]
 }

@@ -8,26 +8,44 @@ MAINTAINER {{ maintainer }}
 {% if install_type == 'binary' %}
     {% if base_distro in ['centos', 'fedora', 'oraclelinux', 'rhel'] %}
         {% set ironic_conductor_packages = [
+            'util-linux',
             'openstack-ironic-conductor',
-            'qemu-img'
+            'qemu-img',
+            'ipmitool',
+            'parted',
+            'gdisk',
+            'psmisc'
         ] %}
     {% elif base_distro in ['ubuntu'] %}
         {% set ironic_conductor_packages = [
+            'bsdmainutils',
             'ironic-conductor',
             'qemu-utils',
-            'ipmitool'
+            'ipmitool',
+            'gdisk',
+            'psmisc',
+            'parted'
         ] %}
     {% endif %}
 {% elif install_type == 'source' %}
     {% if base_distro in ['centos', 'fedora', 'oraclelinux', 'rhel'] %}
         {% set ironic_conductor_packages = [
+            'util-linux',
             'qemu-img',
-            'ipmitool'
+            'ipmitool',
+            'parted',
+            'gdisk',
+            'psmisc',
+            'fuse'
         ] %}
     {% elif base_distro in ['ubuntu', 'debian'] %}
         {% set ironic_conductor_packages = [
+            'bsdmainutils',
             'qemu-utils',
-            'ipmitool'
+            'ipmitool',
+            'gdisk',
+            'psmisc',
+            'parted'
         ] %}
     {% endif %}
 {% endif %}
@@ -35,6 +53,7 @@ MAINTAINER {{ maintainer }}
 {{ macros.install_packages(ironic_conductor_packages | customizable("packages")) }}
 
 {% block ironic_conductor_footer %}{% endblock %}
+{% block footer %}{% endblock %}
 {{ include_footer }}
 
 USER ironic

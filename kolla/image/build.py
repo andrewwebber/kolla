@@ -117,9 +117,21 @@ STATUS_ERRORS = (STATUS_CONNECTION_ERROR, STATUS_PUSH_ERROR,
 def join_many(threads):
     try:
         yield
-    finally:
         for t in threads:
             t.join()
+    except KeyboardInterrupt:
+        try:
+            LOG.info('Waiting for daemon threads exit. Push Ctrl + c again to'
+                     ' force exit')
+            for t in threads:
+                if t.is_alive():
+                    LOG.debug('Waiting thread %s to exit', t.name)
+                    # NOTE(Jeffrey4l): Python Bug: When join without timeout,
+                    # KeyboardInterrupt is never sent.
+                    t.join(0xffff)
+                LOG.debug('Thread %s exits', t.name)
+        except KeyboardInterrupt:
+            LOG.warning('Force exits')
 
 
 class DockerTask(task.Task):
@@ -194,7 +206,7 @@ class PushIntoQueueTask(task.Task):
 
 
 class PushTask(DockerTask):
-    """Task that pushes a image to a docker repository."""
+    """Task that pushes an image to a docker repository."""
 
     def __init__(self, conf, image):
         super(PushTask, self).__init__()
@@ -247,7 +259,7 @@ class BuildTask(DockerTask):
         self.conf = conf
         self.image = image
         self.push_queue = push_queue
-        self.nocache = not conf.cache or conf.no_cache
+        self.nocache = not conf.cache
         self.forcerm = not conf.keep
         self.logger = image.logger
 
@@ -502,7 +514,10 @@ class KollaWorker(object):
         self.install_type = conf.install_type
         self.tag = conf.tag
         self.images = list()
-        rpm_setup_config = filter(None, conf.rpm_setup_config)
+        if conf.rpm_setup_config:
+            rpm_setup_config = filter(None, conf.rpm_setup_config)
+        else:
+            rpm_setup_config = list()
         self.rpm_setup = self.build_rpm_setup(rpm_setup_config)
 
         rh_base = ['fedora', 'centos', 'oraclelinux', 'rhel']
@@ -515,6 +530,10 @@ class KollaWorker(object):
             raise KollaMismatchBaseTypeException(
                 '{} is unavailable for {}'.format(self.install_type, self.base)
             )
+
+        if self.base == 'fedora':
+            LOG.warning('Fedora images are deprecated since Newton and will '
+                        'be removed in the future')
 
         if self.install_type == 'binary':
             self.install_metatype = 'rdo'
@@ -825,7 +844,7 @@ class KollaWorker(object):
                 for plugin in [match.group(0) for match in
                                (re.search('{}-plugin-.+'.format(image.name),
                                           section) for section in
-                               self.conf.list_all_sections()) if match]:
+                                self.conf.list_all_sections()) if match]:
                     try:
                         self.conf.register_opts(
                             common_config.get_source_opts(),
@@ -974,6 +993,7 @@ def run_build():
 
             for x in six.moves.range(conf.push_threads):
                 worker = WorkerThread(conf, push_queue)
+                worker.setDaemon(True)
                 worker.start()
                 workers.append(worker)
 

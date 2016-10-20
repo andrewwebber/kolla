@@ -112,15 +112,19 @@ kolla_internal_vip_address: "10.10.10.254"
 #nova_console: "novnc"
 
 # OpenStack services can be enabled or disabled with these options
+#enable_aodh: "no"
 #enable_barbican: "no"
 #enable_ceilometer: "no"
 #enable_central_logging: "no"
 #enable_ceph: "no"
 #enable_ceph_rgw: "no"
 #enable_cinder: "no"
+#enable_cinder_backend_iscsi: "no"
 #enable_cinder_backend_lvm: "no"
 #enable_cloudkitty: "no"
 #enable_congress: "no"
+#enable_etcd: "no"
+#enable_gnocchi: "no"
 #enable_grafana: "no"
 #enable_heat: "yes"
 #enable_horizon: "yes"
@@ -139,6 +143,7 @@ kolla_internal_vip_address: "10.10.10.254"
 #enable_neutron_agent_ha: "no"
 #enable_neutron_vpnaas: "no"
 #enable_rally: "no"
+#enable_sahara: "no"
 #enable_senlin: "no"
 #enable_swift: "no"
 #enable_telegraf: "no"
@@ -184,8 +189,16 @@ kolla_internal_vip_address: "10.10.10.254"
 #######################
 # Ceilometer options
 #######################
-# Valid options are [ mongodb, mysql ]
+# Valid options are [ mongodb, mysql, gnocchi ]
 #ceilometer_database_type: "mongodb"
+
+
+#######################
+# Gnocchi options
+#######################
+# Valid options are [ file, ceph ]
+#gnocchi_backend_storage: "{{ 'ceph' if enable_ceph|bool else 'file' }}"
+
 
 #######################
 # Cinder options
@@ -200,6 +213,12 @@ kolla_internal_vip_address: "10.10.10.254"
 # Nova options
 #######################
 #nova_backend_ceph: "{{ enable_ceph }}"
+
+
+#######################
+# Horizon options
+#######################
+#horizon_backend_database: "no"
 
 
 #######################################

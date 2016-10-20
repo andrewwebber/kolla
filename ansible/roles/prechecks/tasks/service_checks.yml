@@ -44,7 +44,8 @@
   failed_when: result.stdout | regex_replace('(.*ssh_key.*)', '') | search(":")
 
 - name: Checking fernet_token_expiry in globals.yml. Update fernet_token_expiry to allowed value if this task fails
-  local_action: command grep '^[^#]*fernet_token_expiry:\s*\d*' "{{ CONFIG_DIR }}/globals.yml" | sed 's/[^0-9]*//g'
+  run_once: true
+  local_action: command awk '/^fernet_token_expiry/ { print $2 }' "{{ CONFIG_DIR }}/globals.yml"
   register: result
   changed_when: false
   failed_when: result.stdout | regex_replace('(60|120|180|240|300|360|600|720|900|1200|1800|3600|7200|10800|14400|21600|28800|43200|86400|604800)', '') | search(".+")
@@ -58,6 +59,7 @@
       or groups['neutron-l3-agent'] | length < 2
 
 - name: Checking mongodb backend for ceilometer
+  run_once: True
   local_action: fail msg="ceilometer_database_type set to 'mongodb' but mongodb is not enabled"
   changed_when: false
   when:

@@ -72,8 +72,8 @@ docker_registry:
 docker_namespace: "kolla"
 docker_registry_username:
 
-# Valid options are [ never, on-failure, always ]
-docker_restart_policy: "always"
+# Valid options are [ never, on-failure, always, unless-stopped ]
+docker_restart_policy: "unless-stopped"
 
 # '0' means unlimited retries
 docker_restart_policy_retry: "10"
@@ -239,14 +239,16 @@ enable_neutron: "yes"
 enable_nova: "yes"
 enable_rabbitmq: "yes"
 
-# Additional optional OpenStack services are specified here
+# Additional optional OpenStack features and services are specified here
 enable_aodh: "no"
 enable_barbican: "no"
+enable_cadf_notifications: "no"
 enable_ceilometer: "no"
 enable_central_logging: "no"
 enable_ceph: "no"
 enable_ceph_rgw: "no"
 enable_cinder: "no"
+enable_cinder_backend_iscsi: "no"
 enable_cinder_backend_lvm: "no"
 enable_cloudkitty: "no"
 enable_congress: "no"
@@ -257,6 +259,7 @@ enable_heat: "yes"
 enable_horizon: "yes"
 enable_influxdb: "no"
 enable_ironic: "no"
+enable_iscsid: "{{ enable_cinder_backend_iscsi | bool or enable_cinder_backend_lvm | bool or enable_ironic | bool }}"
 enable_kuryr: "no"
 enable_magnum: "no"
 enable_manila: "no"
@@ -303,7 +306,7 @@ enable_kibana: "{{ 'yes' if enable_central_logging | bool else 'no' }}"
 # RabbitMQ options
 ####################
 rabbitmq_user: "openstack"
-rabbitmq_version: "rabbitmq_server-3.6.2/plugins/rabbitmq_clusterer-3.6.2.ez/rabbitmq_clusterer-3.6.x-667f92b0/ebin"
+rabbitmq_version: "rabbitmq_server-3.6/plugins/rabbitmq_clusterer-3.6.x.ez/rabbitmq_clusterer-3.6.x-667f92b0/ebin"
 
 ####################
 # HAProxy options
@@ -341,8 +344,15 @@ glance_backend_ceph: "{{ enable_ceph }}"
 #######################
 # Ceilometer options
 #######################
-# Valid options are [ mongodb, mysql ]
+# Valid options are [ mongodb, mysql, gnocchi ]
 ceilometer_database_type: "mongodb"
+
+
+#################
+# Gnocchi options
+#################
+# Vaid options are [file, ceph]
+gnocchi_backend_storage: "{{ 'ceph' if enable_ceph|bool else 'file' }}"
 
 
 #################################
@@ -352,10 +362,23 @@ cinder_backend_ceph: "{{ enable_ceph }}"
 
 
 #######################
+# Cloudkitty options
+#######################
+# Valid options are [ ceilometer, gnocchi ]
+cloudkitty_collector_backend: "ceilometer"
+
+
+#######################
 # Nova options
 #######################
 nova_backend_ceph: "{{ enable_ceph }}"
 nova_backend: "{{ 'rbd' if nova_backend_ceph | bool else 'default' }}"
+
+
+#######################
+# Horizon options
+#######################
+horizon_backend_database: "no"
 
 ###################
 # Ceph options
@@ -383,6 +406,7 @@ ceph_pool_type: "replicated"
 ceph_cinder_pool_name: "volumes"
 ceph_cinder_backup_pool_name: "backups"
 ceph_glance_pool_name: "images"
+ceph_gnocchi_pool_name: "gnocchi"
 ceph_nova_pool_name: "vms"
 
 ceph_erasure_profile: "k=4 m=2 ruleset-failure-domain=host"

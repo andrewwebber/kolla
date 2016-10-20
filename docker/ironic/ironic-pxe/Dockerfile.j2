@@ -14,15 +14,17 @@ MAINTAINER {{ maintainer }}
     {% set ironic_pxe_packages = [
         'tftpd-hpa',
         'syslinux-common',
-        'syslinux'
+        'syslinux',
+        'pxelinux'
     ] %}
 {% endif %}
 
 {{ macros.install_packages(ironic_pxe_packages | customizable("packages")) }}
 
 COPY tftp-map-file /map-file
-COPY extend_start.sh /usr/local/bin/kolla_extend_start
-RUN chmod 755 /usr/local/bin/kolla_extend_start
+COPY extend_start.sh /usr/local/bin/kolla_ironic_extend_start
+RUN chmod 755 /usr/local/bin/kolla_ironic_extend_start
 
 {% block ironic_pxe_footer %}{% endblock %}
+{% block footer %}{% endblock %}
 {{ include_footer }}

@@ -14,6 +14,12 @@
             "perm": "0600"
         },
         {
+            "source": "{{ container_config_directory }}/fwaas_driver.ini",
+            "dest": "/etc/neutron/fwaas_driver.ini",
+            "owner": "neutron",
+            "perm": "0600"
+        },
+        {
             "source": "{{ container_config_directory }}/l3_agent.ini",
             "dest": "/etc/neutron/l3_agent.ini",
             "owner": "neutron",
@@ -24,6 +30,18 @@
             "dest": "/etc/neutron/vpnaas_agent.ini",
             "owner": "neutron",
             "perm": "0600"
+        }
+    ],
+    "permissions": [
+        {
+            "path": "/var/log/kolla/neutron",
+            "owner": "neutron:neutron",
+            "recurse": true
+        },
+        {
+            "path": "/var/lib/neutron/kolla",
+            "owner": "neutron:neutron",
+            "recurse": true
         }
     ]
 }

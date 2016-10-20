@@ -152,7 +152,7 @@ case "$1" in
         ;;
 (mariadb_recovery)
         ACTION="Attempting to restart mariadb cluster"
-        EXTRA_OPTS="$EXTRA_OPTS -e action=deploy"
+        EXTRA_OPTS="$EXTRA_OPTS -e action=deploy -e common_run=true"
         PLAYBOOK="${BASEDIR}/ansible/mariadb_recovery.yml"
         ;;
 (destroy)
@@ -200,11 +200,11 @@ EOF
         ;;
 (upgrade)
         ACTION="Upgrading OpenStack Environment"
-        EXTRA_OPTS="$EXTRA_OPTS -e action=upgrade"
+        EXTRA_OPTS="$EXTRA_OPTS -e action=upgrade -e serial=30%"
         ;;
 (reconfigure)
         ACTION="Reconfigure OpenStack service"
-        EXTRA_OPTS="$EXTRA_OPTS -e action=reconfigure"
+        EXTRA_OPTS="$EXTRA_OPTS -e action=reconfigure -e serial=30%"
         ;;
 (certificates)
         ACTION="Generate TLS Certificates"
