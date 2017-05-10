@@ -108,7 +108,7 @@ storage_interface: "{{ network_interface }}"
 cluster_interface: "{{ network_interface }}"
 tunnel_interface: "{{ network_interface }}"
 bifrost_network_interface: "{{ network_interface }}"
-
+tunnel_interface_address: "{{ hostvars[inventory_hostname]['ansible_' + tunnel_interface]['ipv4']['address'] }}"
 
 # Valid options are [ openvswitch, linuxbridge, sfc ]
 neutron_plugin_agent: "openvswitch"
@@ -200,6 +200,8 @@ etcd_peer_port: "2380"
 
 kuryr_port: "23750"
 
+grafana_server_port: "3000"
+
 public_protocol: "{{ 'https' if kolla_enable_tls_external | bool else 'http' }}"
 internal_protocol: "http"
 admin_protocol: "http"
@@ -207,7 +209,7 @@ admin_protocol: "http"
 ####################
 # OpenStack options
 ####################
-openstack_release: "3.0.0"
+openstack_release: "3.0.3"
 openstack_logging_debug: "False"
 
 openstack_region_name: "RegionOne"

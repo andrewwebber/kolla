@@ -7,7 +7,7 @@ control02
 control03
 
 # The above can also be specified as follows:
-#control[01:03]     ansible_ssh_user=kolla
+#control[01:03]     ansible_user=kolla
 
 # The network nodes are where your l3-agent and loadbalancers will run
 # This can be the same as a host in the control group
@@ -32,6 +32,7 @@ control
 network
 compute
 storage
+monitoring
 
 # You can explicitly specify which hosts run each project by updating the
 # groups in the sections below. Common services are grouped together.
@@ -252,7 +253,7 @@ manila
 manila
 
 [manila-share:children]
-storage
+network
 
 # Swift
 [swift-proxy-server:children]

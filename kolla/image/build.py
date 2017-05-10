@@ -285,6 +285,8 @@ class BuildTask(DockerTask):
             ])
         if self.image.children and self.success:
             for image in self.image.children:
+                if image.status == STATUS_UNMATCHED:
+                    continue
                 followups.append(BuildTask(self.conf, image, self.push_queue))
         return followups
 
@@ -822,6 +824,9 @@ class KollaWorker(object):
                     installation['reference'] = self.conf[section]['reference']
             return installation
 
+        all_sections = (set(six.iterkeys(self.conf._groups)) |
+                        set(self.conf.list_all_sections()))
+
         for path in self.docker_build_paths:
             # Reading parent image name
             with open(os.path.join(path, 'Dockerfile')) as f:
@@ -842,9 +847,9 @@ class KollaWorker(object):
                                             image.name)
                 image.source = process_source_installation(image, image.name)
                 for plugin in [match.group(0) for match in
-                               (re.search('{}-plugin-.+'.format(image.name),
+                               (re.search('^{}-plugin-.+'.format(image.name),
                                           section) for section in
-                                self.conf.list_all_sections()) if match]:
+                                all_sections) if match]:
                     try:
                         self.conf.register_opts(
                             common_config.get_source_opts(),
@@ -928,6 +933,11 @@ class KollaWorker(object):
         queue = six.moves.queue.Queue()
 
         for image in self.images:
+            if image.status == STATUS_UNMATCHED:
+                # Don't bother queuing up build tasks for things that
+                # were not matched in the first place... (not worth the
+                # effort to run them, if they won't be used anyway).
+                continue
             if image.parent is None:
                 queue.put(BuildTask(self.conf, image, push_queue))
                 LOG.info('Added image %s to queue', image.name)

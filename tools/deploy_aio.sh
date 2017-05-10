@@ -23,7 +23,7 @@ function copy_logs {
 
     # NOTE(SamYaple): Fix permissions for log extraction in gate
     chmod -R 777 /tmp/logs/kolla /tmp/logs/kolla_configs /tmp/logs/system_logs
-    ara generate /tmp/logs/playbook_reports/
+    ara generate html /tmp/logs/playbook_reports/
 }
 
 function sanity_check {
@@ -82,6 +82,8 @@ EOF
     cat << EOF > /etc/kolla/config/nova/nova-compute.conf
 [libvirt]
 virt_type=qemu
+# NOTE(Jeffrey4l): fix the gate in iax-ord nodes for libvirt 2.0.
+cpu_mode=none
 EOF
 
     cat << EOF > /etc/kolla/config/nova.conf

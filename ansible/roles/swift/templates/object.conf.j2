@@ -8,6 +8,7 @@ log_address = /var/lib/kolla/heka/log
 log_name = {{ service_name }}
 log_facility = LOG_LOCAL0
 log_level = INFO
+workers = {{ openstack_service_workers }}
 
 [pipeline:main]
 {% if service_name == 'swift-object-expirer' %}
@@ -23,8 +24,8 @@ use = egg:swift#object
 [object-auditor]
 {% endif %}
 
-{% if service_name == 'swift-object-replicator' %}
 [object-replicator]
+{% if service_name == 'swift-object-replicator' %}
 sync_module = {replication_ip}:{meta}:object
 {% endif %}
 

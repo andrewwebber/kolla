@@ -20,6 +20,9 @@ localhost       ansible_connection=local
 [collectd:children]
 compute
 
+[baremetal:children]
+control
+
 [grafana:children]
 monitoring
 
@@ -234,7 +237,7 @@ manila
 manila
 
 [manila-share:children]
-storage
+network
 
 # Swift
 [swift-proxy-server:children]

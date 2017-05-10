@@ -44,7 +44,7 @@ gpgcheck=1
 gpgkey=https://yum.dockerproject.org/gpg
 EOF
 
-sudo yum -y install libffi-devel openssl-devel docker-engine btrfs-progs
+sudo yum -y install libffi-devel openssl-devel docker-engine-1.12.6 docker-engine-selinux-1.12.6 btrfs-progs
 
 setup_disk
 
@@ -61,9 +61,5 @@ sudo systemctl daemon-reload
 
 sudo systemctl start docker
 sudo docker info
-
-# disable ipv6 until we're sure routes to fedora mirrors work properly
-sudo sh -c 'echo "net.ipv6.conf.all.disable_ipv6 = 1" > /etc/sysctl.d/disable_ipv6.conf'
-sudo /usr/sbin/sysctl -p
 
 echo "Completed $0."
