@@ -15,8 +15,11 @@ MAINTAINER {{ maintainer }}
     {% elif base_distro in ['ubuntu'] %}
         {% set glance_base_packages = [
             'glance',
-            'python-rbd',
-            'python-rados'
+            'librados2=0.94.*',
+            'librbd1=0.94.*',
+            'python-rbd=0.94.*',
+            'python-rados=0.94.*'
+            '--allow-unauthenticated'
         ] %}
     {% endif %}
 
