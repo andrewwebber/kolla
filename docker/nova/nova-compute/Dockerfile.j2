@@ -28,13 +28,23 @@ MAINTAINER {{ maintainer }}
             'nova-compute',
             'openvswitch-switch',
             'sysfsutils',
-            'ceph-common',
+            'librados2=0.94.*',
+            'librbd1=0.94.*',
+            'python-rados=0.94.*',
+            'python-cephfs=0.94.*',
+            'python-rbd=0.94.*',
+            'ceph-common=0.94.*',
+            'genisoimage',
+            'open-iscsi',
+            'targetcli',
+            'python-rtslib',
             'ironic-common',
             'python-ironicclient',
             'genisoimage',
             'open-iscsi',
             'targetcli',
-            'python-rtslib'
+            'python-rtslib',
+            '--allow-unauthenticated'
         ] %}
 
 {{ macros.install_packages(nova_compute_packages | customizable("packages")) }}
