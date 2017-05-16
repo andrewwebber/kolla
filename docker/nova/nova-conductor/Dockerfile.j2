@@ -15,7 +15,14 @@ MAINTAINER {{ maintainer }}
     {% elif base_distro in ['ubuntu'] %}
 
         {% set nova_conductor_packages = [
-            'nova-conductor'
+            'nova-conductor',
+            'librados2=0.94.*',
+            'librbd1=0.94.*',
+            'python-rados=0.94.*',
+            'python-cephfs=0.94.*',
+            'python-rbd=0.94.*',
+            'ceph-common=0.94.*',
+            '--allow-unauthenticated'
         ] %}
 
     {% endif %}
